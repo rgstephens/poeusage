@@ -34,6 +34,19 @@ archives:
           - zip
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
 
+brews:
+  - name: poeusage
+    repository:
+      owner: rgstephens
+      name: homebrew-poeusage
+      token: "{{ .Env.HOMEBREW_RELEASE_TOKEN }}"
+    homepage: "https://github.com/rgstephens/poeusage"
+    description: "Monitor your Poe API point balance and usage history"
+    install: |
+      bin.install "poeusage"
+    test: |
+      system "#{bin}/poeusage", "--version"
+
 checksum:
   name_template: checksums.txt
 
