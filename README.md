@@ -2,6 +2,8 @@
 
 Monitor your Poe API point balance and usage history from the terminal.
 
+Install with `brew install rgstephens/tap/poeusage`
+
 ---
 
 ## Command Tree
