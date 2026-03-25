@@ -1,0 +1,22 @@
+# Build output
+bin/
+dist/
+
+# GoReleaser
+.goreleaser-local.yml
+
+# Environment / secrets
+.env
+.env.local
+
+# macOS
+.DS_Store
+
+# Editor
+.history/
+.vscode/
+.idea/
+
+# Go test cache (optional — go test caches results in GOCACHE, not here)
+*.test
+*.out
