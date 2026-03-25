@@ -38,10 +38,12 @@ brews:
   - name: poeusage
     repository:
       owner: rgstephens
-      name: homebrew-poeusage
+      name: homebrew-tap
       token: "{{ .Env.HOMEBREW_RELEASE_TOKEN }}"
+    directory: Formula
     homepage: "https://github.com/rgstephens/poeusage"
     description: "Monitor your Poe API point balance and usage history"
+    license: "MIT"
     install: |
       bin.install "poeusage"
     test: |
