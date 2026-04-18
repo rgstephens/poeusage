@@ -74,7 +74,17 @@ func (r *UsageRecord) Time() time.Time {
 
 // BalanceResponse is the response from the balance endpoint.
 type BalanceResponse struct {
-	CurrentPointBalance int `json:"current_point_balance"`
+	CurrentPointBalance  int    `json:"current_point_balance"`
+	PlanPointsBalance    int    `json:"plan_points_balance"`
+	AddonPointBalance    int    `json:"addon_point_balance"`
+	TotalBalanceUSD      string `json:"total_balance_usd"`
+	NextMonthlyGrantTime int64  `json:"next_monthly_grant_time"` // unix microseconds
+	NextMonthlyGrant     int    `json:"next_monthly_grant_amount"`
+}
+
+// PeriodEnd returns the date the current billing period ends.
+func (b *BalanceResponse) PeriodEnd() time.Time {
+	return time.UnixMicro(b.NextMonthlyGrantTime).UTC()
 }
 
 // HistoryPage is one page of history from the API.

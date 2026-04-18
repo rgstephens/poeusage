@@ -22,7 +22,7 @@ func runBalance(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	output.PrintBalance(os.Stdout, bal.CurrentPointBalance, globalState.outOpts)
+	output.PrintBalance(os.Stdout, bal, globalState.outOpts)
 	return nil
 }
 

@@ -136,19 +136,43 @@ func FilterRecords(records []api.UsageRecord, bot, usageType string, since, unti
 }
 
 // PrintBalance prints the balance in the appropriate format.
-func PrintBalance(w io.Writer, bal int, opts Options) {
+func PrintBalance(w io.Writer, bal *api.BalanceResponse, opts Options) {
 	switch opts.Format {
 	case FormatJSON:
-		fmt.Fprintf(w, `{"current_point_balance":%d}`+"\n", bal)
+		enc := json.NewEncoder(w)
+		enc.SetIndent("", "  ")
+		enc.Encode(map[string]any{
+			"current_point_balance": bal.CurrentPointBalance,
+			"total_balance_usd":     bal.TotalBalanceUSD,
+			"period_end":            bal.PeriodEnd().Format("2006-01-02"),
+		})
 	case FormatPlain:
-		fmt.Fprintf(w, "%d\n", bal)
+		fmt.Fprintf(w, "%d\n", bal.CurrentPointBalance)
 	default:
+		periodEnd := bal.PeriodEnd()
 		if opts.IsTTY {
-			fmt.Fprintf(w, "Current balance: %s pts\n", FormatInt(bal))
+			color := UseColor(opts)
+			tw := tabwriter.NewWriter(w, 0, 0, 2, ' ', 0)
+			if color {
+				fmt.Fprintf(tw, "\x1b[1mCurrent balance:\x1b[0m\t%s pts\t($%s)\n",
+					FormatInt(bal.CurrentPointBalance), bal.TotalBalanceUSD)
+				fmt.Fprintf(tw, "\x1b[1mPeriod resets:\x1b[0m\t%s\t(%d days)\n",
+					periodEnd.Format("2006-01-02"), daysUntil(periodEnd))
+			} else {
+				fmt.Fprintf(tw, "Current balance:\t%s pts\t($%s)\n",
+					FormatInt(bal.CurrentPointBalance), bal.TotalBalanceUSD)
+				fmt.Fprintf(tw, "Period resets:\t%s\t(%d days)\n",
+					periodEnd.Format("2006-01-02"), daysUntil(periodEnd))
+			}
+			tw.Flush()
 		} else {
-			fmt.Fprintf(w, "%d\n", bal)
+			fmt.Fprintf(w, "%d\n", bal.CurrentPointBalance)
 		}
 	}
+}
+
+func daysUntil(t time.Time) int {
+	return int(math.Ceil(time.Until(t).Hours() / 24))
 }
 
 // historyJSONRecord is the JSON representation of a usage record.
